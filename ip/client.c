@@ -63,6 +63,8 @@ uint32_t human_readable_to_bits(char * ip_string_literal){
 }
 
 uint8_t * byte_packed_packet(char * dest_ip_string, char * source_ip_string, char * body){
+    // Use uint8_t array to avoid "byte packing"
+    // For integers bigger than 8 bytes, use host to network short/long (to ensure big endianness)
     uint8_t version = 4;
     uint8_t ihl = 5;
     uint16_t type_of_service = 0; // best effort
@@ -105,7 +107,7 @@ uint8_t * byte_packed_packet(char * dest_ip_string, char * source_ip_string, cha
     memcpy(packet+ip_header_size, body, payload_size);
 
 
-
+    // Debugging information
     printf("Generated IP Packet:\n");
     printf("  Version: %u, IHL: %u (Header Size: %d bytes)\n", version, ihl, ip_header_size);
     printf("  Total Length: %u bytes\n", total_packet_length);
