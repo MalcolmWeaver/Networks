@@ -84,13 +84,15 @@ uint8_t * byte_packed_packet(char * dest_ip_string, char * source_ip_string, cha
 
     int ip_header_size = ihl * 4;
     int payload_size = strlen(body);
-    int total_packet_length = ip_header_size + payload_size;
+    uint16_t total_packet_length = ip_header_size + payload_size;
 
-    uint8_t * packet = (uint8_t *)malloc(total_packet_length);
-    memset(packet, 0, total_packet_length);
+    uint8_t * packet = (uint8_t *)calloc(total_packet_length, sizeof(uint8_t));
+
     packet[0] = (version << 4) | ihl;
     packet[1] = type_of_service;
-    uint16_t net_total_length = htons(net_total_length);
+    uint16_t net_total_length = htons(total_packet_length);
+    printf("HELLO!\n");
+    printf("NET TOTAL LENGTH %u (0x%04x)\n", net_total_length, net_total_length); 
     memcpy(&packet[2], &net_total_length, sizeof(uint16_t));
 
     uint16_t net_id = htons(identification);
@@ -135,6 +137,7 @@ uint8_t * byte_packed_packet(char * dest_ip_string, char * source_ip_string, cha
 /*    char message[] = "Hello to SAM!\n";*/
 /*    char source_ip[] = "192.168.1.170";*/
 /*    char dest_ip[] = "192.168.1.170";*/
+/*    printf("human_readable_to_bits(\"192.168.1.170\") = 0x%08x\n", human_readable_to_bits("192.168.1.170"));*/
 /*    uint8_t * outbound_packet = byte_packed_packet(dest_ip, source_ip, message);*/
 /*    uint16_t packet_size = (outbound_packet[2] << 8) | outbound_packet[3];*/
 /*}*/
