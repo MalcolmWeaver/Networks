@@ -12,6 +12,11 @@
 
 #define EXPERIMENTAL_PROTOCOL 253
 
+// THE PURPOSE OF THIS MODULE IS TO IMPLEMENT AND SEND
+// A RAW (NO UDP/TCP) IP PACKET ALONG THE NETWORK.
+// THIS MEANS THAT WE CANNOT USE ANY OF THE IANA DEFINED
+// PROTOCOL NUMBERS (https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml#Internet_Assigned_Numbers_Authority)
+
 uint16_t calc_checksum(uint16_t * header, int nbytes){
     long sum = 0;
     while(nbytes > 1){
