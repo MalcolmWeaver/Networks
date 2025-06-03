@@ -15,11 +15,15 @@ typedef struct {
     uint32_t dest_ip;
     uint32_t * ip_options;
     int ip_options_length;
-    char *payload;
-   
-} PacketBuilder; // REFACTOR TO PacketBuilder
+    char *payload;   
+} PacketBuilder;
 
+// The following allocates memory.
+// Caller is responsible for freeing the PacketBuilder
+// TODO
 PacketBuilder * create_packet(const char * payload, const char * src_ip, const char * dst_ip, void (*packet_builder)(PacketBuilder*, const char *, const char *));
+
+void packet_builder_free(PacketBuilder * packet_builder_ptr);
 
 // The following can be used or extended to implement the 
 // strategy pattern for header building with each module 

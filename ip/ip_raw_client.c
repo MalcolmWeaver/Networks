@@ -51,7 +51,6 @@ int send_network_level_packet(IPPacket * packet){
 
     // --- Clean Up ---
     close(sock);
-    free(packet);
 
     return 0;
 }
@@ -59,11 +58,12 @@ int send_network_level_packet(IPPacket * packet){
 
 int main() {
     // IMPORTANT: CHECK YOUR IP ADDRESS EVERYTIME YOU RUN THIS
-    char * dest_ip = "172.17.0.1";//"192.168.1.170";
-    char * source_ip = "172.17.0.1";//192.168.1.170";
+    char dest_ip[] = "172.17.0.1";//"192.168.1.170";
+    char source_ip[] = "172.17.0.1";//192.168.1.170";
     PacketBuilder * builder = create_packet("HELLO SAM\n", dest_ip, source_ip, raw_packet_builder);
-
     IPPacket * packet = pack_packet(builder);
+    packet_builder_free(builder);
+    
     if (packet == NULL) {
         printf("Failed to build packet\n");
         return 1;

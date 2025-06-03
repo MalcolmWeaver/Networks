@@ -81,6 +81,11 @@ PacketBuilder * create_packet(const char * payload, const char * src_ip, const c
     return packet_struct;
 }
 
+void packet_builder_free(PacketBuilder * packet_builder_ptr){
+    if(!packet_builder_ptr){return;}
+    free(packet_builder_ptr->payload);
+    free(packet_builder_ptr);
+}
 
 void base_packet_builder(PacketBuilder * packet_struct, const char * dest_ip_string, const char * source_ip_string){
     packet_struct->dest_ip = ip_string_to_address(dest_ip_string);

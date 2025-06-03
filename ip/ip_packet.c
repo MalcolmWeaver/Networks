@@ -52,5 +52,6 @@ void packet_free(IPPacket *packet) {
     packet->data = NULL;
     packet->total_length = 0;
     packet->header_length = 0;
+    free(packet);
 }
 
