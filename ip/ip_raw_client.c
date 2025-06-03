@@ -1,11 +1,10 @@
-#include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
-#include "ip_packet.h"
+#include "ip_packet_builder.h"
 
 // THE PURPOSE OF THIS MODULE IS TO IMPLEMENT AND SEND
 // A RAW (NO UDP/TCP) IP PACKET ALONG THE NETWORK.
@@ -59,8 +58,9 @@ int send_network_level_packet(IPPacket * packet){
 
 
 int main() {
-    char * dest_ip = "192.168.1.170";
-    char * source_ip = "192.168.1.170";
+    // IMPORTANT: CHECK YOUR IP ADDRESS EVERYTIME YOU RUN THIS
+    char * dest_ip = "172.17.0.1";//"192.168.1.170";
+    char * source_ip = "172.17.0.1";//192.168.1.170";
     PacketBuilder * builder = create_packet("HELLO SAM\n", dest_ip, source_ip, raw_packet_builder);
 
     IPPacket * packet = pack_packet(builder);
