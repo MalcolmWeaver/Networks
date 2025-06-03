@@ -41,7 +41,9 @@ uint32_t ip_string_to_address(const char *ip_string) {
 }
 
 
-void base_packet_builder(PacketStruct * packet_struct){
+void base_packet_builder(PacketStruct * packet_struct, const char * dest_ip_string, const char * source_ip_string){
+    packet_struct->dest_ip = ip_string_to_address(dest_ip_string);
+    packet_struct->source_ip = ip_string_to_address(source_ip_string);
     packet_struct->identification = rand() % 65536;
     packet_struct->ttl = DEFAULT_TTL;
     packet_struct->payload = NULL;
@@ -62,6 +64,8 @@ uint16_t calc_checksum(const uint8_t *data, size_t nbytes) {
 
 IPPacket * pack_packet(PacketStruct *packet_struct) {
     IPPacket * packet = (IPPacket *) calloc(1, sizeof(IPPacket));
+    packet->dest_ip = packet_struct->dest_ip;
+    packet->source_ip = packet_struct->source_ip;
     packet->header_length = packet_struct->ihl * 4;
     packet->total_length = packet->header_length + (packet_struct->payload ? strlen(packet_struct->payload) : 0);
     packet->data = calloc(packet->total_length, sizeof(uint8_t));
@@ -115,19 +119,3 @@ void packet_print_debug(const IPPacket *packet) {
     printf("\n");
 }
 
-
-
-
-// int main() {
-//     PacketStruct * builder = create_packet("HELLO SAM\n", "192.168.1.170", "192.168.1.170", raw_packet_builder);
-
-//     IPPacket * packet = pack_packet(&builder);
-//     if (packet == NULL) {
-//         printf("Failed to build packet\n");
-//         return 1;
-//     } else{
-//         packet_print_debug(packet);
-//     }
-//     packet_free(packet);
-//     return 0;
-// }

@@ -17,6 +17,8 @@ typedef struct {
     uint8_t *data;
     uint16_t total_length;
     uint16_t header_length;
+    uint32_t dest_ip;
+    uint32_t source_ip;
 } IPPacket;
 
 // Packet Builder
@@ -36,7 +38,7 @@ typedef struct {
    
 } PacketStruct;
 
-void base_packet_builder(PacketStruct * packet_struct);
+void base_packet_builder(PacketStruct * packet_struct, const char * dest_ip_string, const char * source_ip_string);
 
 IPPacket * pack_packet(PacketStruct * packet_struct);
 void packet_free(IPPacket * packet);
