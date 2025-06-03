@@ -38,6 +38,12 @@ typedef struct {
    
 } PacketStruct;
 
+PacketStruct * create_packet(const char * payload, const char * src_ip, const char * dst_ip, void (*packet_builder)(PacketStruct*, const char *, const char *));
+
+// The following can be used or extended to implement the 
+// strategy pattern for header building with each module 
+// (raw, UDP, TCP). Define your own packet_builder, 
+// passing a pointer to that function to create_packet.
 void base_packet_builder(PacketStruct * packet_struct, const char * dest_ip_string, const char * source_ip_string);
 
 IPPacket * pack_packet(PacketStruct * packet_struct);

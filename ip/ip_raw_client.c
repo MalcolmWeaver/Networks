@@ -7,6 +7,11 @@
 #include <unistd.h>
 #include "ip_packet.h"
 
+// THE PURPOSE OF THIS MODULE IS TO IMPLEMENT AND SEND
+// A RAW (NO UDP/TCP) IP PACKET ALONG THE NETWORK.
+// THIS MEANS THAT WE CANNOT USE ANY OF THE IANA DEFINED
+// PROTOCOL NUMBERS (https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml#Internet_Assigned_Numbers_Authority)
+
 void raw_packet_builder(PacketStruct * packet_struct, const char * dest_ip_string, const char * source_ip_string){
     base_packet_builder(packet_struct, dest_ip_string, source_ip_string);
 
@@ -17,25 +22,6 @@ void raw_packet_builder(PacketStruct * packet_struct, const char * dest_ip_strin
     packet_struct->ip_options_length = 0;
    
     packet_struct->ihl = 5 + packet_struct->ip_options_length;
-}
-
-
-PacketStruct * create_packet(const char * payload, const char * src_ip, const char * dst_ip, void (*packet_builder)(PacketStruct*, const char *, const char *)){
-    PacketStruct * packet_struct = (PacketStruct*)calloc(1, sizeof(PacketStruct));
-    packet_builder(packet_struct, dst_ip, src_ip);
-   
-    uint32_t src=ip_string_to_address(src_ip), dst=ip_string_to_address(dst_ip);
-    if (src < SUCCESS ||
-        dst < SUCCESS) {
-        printf("Invalid IP address\n");
-        return NULL;
-    }
-
-    packet_struct->source_ip = src;
-    packet_struct->dest_ip = dst;
-    packet_struct->payload = strdup(payload);
-
-    return packet_struct;
 }
 
 int send_network_level_packet(IPPacket * packet){

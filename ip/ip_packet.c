@@ -40,16 +40,6 @@ uint32_t ip_string_to_address(const char *ip_string) {
     return htonl(address);
 }
 
-
-void base_packet_builder(PacketStruct * packet_struct, const char * dest_ip_string, const char * source_ip_string){
-    packet_struct->dest_ip = ip_string_to_address(dest_ip_string);
-    packet_struct->source_ip = ip_string_to_address(source_ip_string);
-    packet_struct->identification = rand() % 65536;
-    packet_struct->ttl = DEFAULT_TTL;
-    packet_struct->payload = NULL;
-};
-
-
 uint16_t calc_checksum(const uint8_t *data, size_t nbytes) {
     long sum = 0;
     const uint16_t *header = (const uint16_t *)data;
@@ -118,4 +108,31 @@ void packet_print_debug(const IPPacket *packet) {
     }
     printf("\n");
 }
+
+PacketStruct * create_packet(const char * payload, const char * src_ip, const char * dst_ip, void (*packet_builder)(PacketStruct*, const char *, const char *)){
+    PacketStruct * packet_struct = (PacketStruct*)calloc(1, sizeof(PacketStruct));
+    packet_builder(packet_struct, dst_ip, src_ip);
+   
+    uint32_t src=ip_string_to_address(src_ip), dst=ip_string_to_address(dst_ip);
+    if (src < SUCCESS ||
+        dst < SUCCESS) {
+        printf("Invalid IP address\n");
+        return NULL;
+    }
+
+    packet_struct->source_ip = src;
+    packet_struct->dest_ip = dst;
+    packet_struct->payload = strdup(payload);
+
+    return packet_struct;
+}
+
+
+void base_packet_builder(PacketStruct * packet_struct, const char * dest_ip_string, const char * source_ip_string){
+    packet_struct->dest_ip = ip_string_to_address(dest_ip_string);
+    packet_struct->source_ip = ip_string_to_address(source_ip_string);
+    packet_struct->identification = rand() % 65536;
+    packet_struct->ttl = DEFAULT_TTL;
+    packet_struct->payload = NULL;
+};
 
