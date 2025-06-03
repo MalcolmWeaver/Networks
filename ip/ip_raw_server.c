@@ -10,7 +10,7 @@
 
 int main(){
     printf("STARTING SERVER...\n\n\n");
-    int sockfd = socket(AF_INET, SOCK_RAW, IPPROTO_RAW);
+    int sockfd = socket(AF_INET, SOCK_RAW, 253);
     uint8_t buffer[MAX_BUF_SZ];
     if (sockfd < 0){perror("FILE ISSUE"); return -1;}
     while (1) {
