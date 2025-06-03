@@ -52,7 +52,7 @@ uint16_t calc_checksum(const uint8_t *data, size_t nbytes) {
     return (uint16_t)~sum;
 }
 
-IPPacket * pack_packet(PacketStruct *packet_struct) {
+IPPacket * pack_packet(PacketBuilder *packet_struct) {
     IPPacket * packet = (IPPacket *) calloc(1, sizeof(IPPacket));
     packet->dest_ip = packet_struct->dest_ip;
     packet->source_ip = packet_struct->source_ip;
@@ -109,8 +109,8 @@ void packet_print_debug(const IPPacket *packet) {
     printf("\n");
 }
 
-PacketStruct * create_packet(const char * payload, const char * src_ip, const char * dst_ip, void (*packet_builder)(PacketStruct*, const char *, const char *)){
-    PacketStruct * packet_struct = (PacketStruct*)calloc(1, sizeof(PacketStruct));
+PacketBuilder * create_packet(const char * payload, const char * src_ip, const char * dst_ip, void (*packet_builder)(PacketBuilder*, const char *, const char *)){
+    PacketBuilder * packet_struct = (PacketBuilder*)calloc(1, sizeof(PacketBuilder));
     packet_builder(packet_struct, dst_ip, src_ip);
    
     uint32_t src=ip_string_to_address(src_ip), dst=ip_string_to_address(dst_ip);
@@ -128,7 +128,7 @@ PacketStruct * create_packet(const char * payload, const char * src_ip, const ch
 }
 
 
-void base_packet_builder(PacketStruct * packet_struct, const char * dest_ip_string, const char * source_ip_string){
+void base_packet_builder(PacketBuilder * packet_struct, const char * dest_ip_string, const char * source_ip_string){
     packet_struct->dest_ip = ip_string_to_address(dest_ip_string);
     packet_struct->source_ip = ip_string_to_address(source_ip_string);
     packet_struct->identification = rand() % 65536;
@@ -136,6 +136,20 @@ void base_packet_builder(PacketStruct * packet_struct, const char * dest_ip_stri
     packet_struct->payload = NULL;
 };
 
-IPPacket * unpack_packet(uint8_t * byte_buffer, int bytes_recieved){
-    printf("%02X\n", *byte_buffer);
+IPPacket * unpack_packet(uint8_t * buffer, int bytes_recieved){
+    uint8_t ip_header_length = buffer[0] & 0x0F;
+    uint8_t version = buffer[0] & 0xF0;
+    uint16_t total_length = *(uint16_t *)(buffer + 2);
+    printf("IP HEADER REPORTED TOTAL LENGTH %d, bytes recieved %ld\n", total_length, strlen((const char *) buffer));
+    uint32_t src_ip = *(uint32_t *) (buffer + 12);
+    uint32_t dst_ip = *(uint32_t *) (buffer + 16);
+    char * payload_slice = (char *) (buffer + ip_header_length * 4);
+    IPPacket * ip_packet = (IPPacket *) calloc(1, sizeof(IPPacket));
+    ip_packet->total_length = total_length;
+    ip_packet->header_length = ip_header_length;
+    ip_packet->dest_ip = dst_ip;
+    ip_packet->source_ip = src_ip;
+    ip_packet->data = (uint8_t *) strdup(payload_slice);
+    printf("UNPACKET PACKET PAYLOAD: %s\n", ip_packet->data);
+    return ip_packet;
 }

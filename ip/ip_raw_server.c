@@ -23,6 +23,7 @@ int main(){
             continue;
         }
         printf("Received %zd bytes\n", bytes_received);
-        unpack_packet(buffer, bytes_received);
+        IPPacket * packet = unpack_packet(buffer, bytes_received);
+        packet_free(packet);
     }
 }

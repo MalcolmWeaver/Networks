@@ -12,7 +12,7 @@
 // THIS MEANS THAT WE CANNOT USE ANY OF THE IANA DEFINED
 // PROTOCOL NUMBERS (https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml#Internet_Assigned_Numbers_Authority)
 
-void raw_packet_builder(PacketStruct * packet_struct, const char * dest_ip_string, const char * source_ip_string){
+void raw_packet_builder(PacketBuilder * packet_struct, const char * dest_ip_string, const char * source_ip_string){
     base_packet_builder(packet_struct, dest_ip_string, source_ip_string);
 
     packet_struct->version = IPV4_VERSION;
@@ -61,7 +61,7 @@ int send_network_level_packet(IPPacket * packet){
 int main() {
     char * dest_ip = "192.168.1.170";
     char * source_ip = "192.168.1.170";
-    PacketStruct * builder = create_packet("HELLO SAM\n", dest_ip, source_ip, raw_packet_builder);
+    PacketBuilder * builder = create_packet("HELLO SAM\n", dest_ip, source_ip, raw_packet_builder);
 
     IPPacket * packet = pack_packet(builder);
     if (packet == NULL) {
