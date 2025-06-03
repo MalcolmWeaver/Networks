@@ -41,7 +41,6 @@ int send_network_level_packet(IPPacket * packet){
     dest_address.sin_addr.s_addr = packet->dest_ip;
 
 
-    // --- Send the Packet ---
     if (sendto(sock, packet->data, packet->total_length, 0,
                (struct sockaddr *)&dest_address, sizeof(dest_address)) < 0) {
         perror("Failed to send packet");
@@ -49,7 +48,6 @@ int send_network_level_packet(IPPacket * packet){
         printf("Packet sent successfully!\n");
     }
 
-    // --- Clean Up ---
     close(sock);
 
     return 0;
