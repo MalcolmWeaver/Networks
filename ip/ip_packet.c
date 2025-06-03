@@ -33,7 +33,7 @@ uint32_t ip_string_to_address(const char *ip_string) {
     uint32_t address = 0;
     char *token = strtok(temp, ".");
     for (int i = 0; token && i < 4; i++) {
-        address |= (atoi(token) << (i * 8));
+        address |= (atoi(token) << ((3-i) * 8));
         token = strtok(NULL, ".");
     }
     free(temp);
@@ -136,3 +136,6 @@ void base_packet_builder(PacketStruct * packet_struct, const char * dest_ip_stri
     packet_struct->payload = NULL;
 };
 
+IPPacket * unpack_packet(uint8_t * byte_buffer, int bytes_recieved){
+    printf("%02X\n", *byte_buffer);
+}

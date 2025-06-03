@@ -36,7 +36,7 @@ typedef struct {
     int ip_options_length;
     char *payload;
    
-} PacketStruct;
+} PacketStruct; // REFACTOR TO PacketBuilder
 
 PacketStruct * create_packet(const char * payload, const char * src_ip, const char * dst_ip, void (*packet_builder)(PacketStruct*, const char *, const char *));
 
@@ -49,3 +49,5 @@ void base_packet_builder(PacketStruct * packet_struct, const char * dest_ip_stri
 IPPacket * pack_packet(PacketStruct * packet_struct);
 void packet_free(IPPacket * packet);
 void packet_print_debug(const IPPacket * packet);
+
+IPPacket * unpack_packet(uint8_t * byte_buffer, int bytes_recieved);
